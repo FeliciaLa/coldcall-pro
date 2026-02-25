@@ -340,7 +340,7 @@ export function CallView({ scenario, onEndCall }: CallViewProps) {
                 href="/pricing?gate=1"
                 className="mt-3 inline-block rounded-md bg-[#2979ff] px-4 py-2 text-[13px] font-semibold text-white hover:bg-[#1a6ae6]"
               >
-                Unlock 50 calls for £19
+                Unlock 50 calls for £9.99
               </a>
             )}
           </div>

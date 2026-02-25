@@ -83,14 +83,13 @@ function PricingContent() {
 
         <div className="mt-10 w-full rounded-xl border border-[#1c2128] bg-[#0d1117] p-8">
           <p className="font-lp-heading text-4xl font-extrabold tracking-tight text-[#e6edf3]">
-            £19
+            £9.99
           </p>
           <p className="font-lp-mono mt-1 text-[13px] text-[#8b949e]">One-time</p>
           <ul className="mt-6 space-y-2.5 text-[14px] text-[#e6edf3]">
             <li>50 practice simulations</li>
             <li>All 5 prospect scenarios</li>
             <li>Coaching scorecards</li>
-            <li>Full transcripts</li>
           </ul>
           <button
             type="button"
