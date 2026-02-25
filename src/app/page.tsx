@@ -65,7 +65,7 @@ export default function Home() {
             href="/scenarios"
             className="font-lp-mono rounded-md bg-[#2979ff] px-4 py-2 text-[12px] font-semibold text-white hover:bg-[#1a6ae6] transition-colors"
           >
-            Try a free call
+            Try 3 free calls
           </Link>
         </div>
       </nav>

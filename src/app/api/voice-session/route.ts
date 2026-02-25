@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
         {
           error:
             access.reason === "free_used"
-              ? "You've used your free call. Unlock more to continue."
+              ? "You've used your 3 free calls. Unlock more to continue."
               : "No simulations remaining. Purchase more to continue.",
           code: access.reason,
         },

@@ -2,6 +2,9 @@ import { getSupabase, hasSupabase } from "./supabase";
 
 const COOKIE_NAME = "ccp_anon";
 
+/** Number of free simulations allowed per anonymous user before paywall. */
+export const FREE_SIMS_LIMIT = 3;
+
 export function getAnonymousId(cookieHeader: string | null): string | null {
   if (!cookieHeader) return null;
   const match = cookieHeader.match(new RegExp(`${COOKIE_NAME}=([^;]+)`));
@@ -39,11 +42,12 @@ export async function checkAccess(
 
   const { data: freeRow } = await supabase
     .from("free_sims")
-    .select("used")
+    .select("used_count")
     .eq("anonymous_id", anonymousId)
     .single();
 
-  const freeUsed = freeRow?.used === true;
+  const usedCount = freeRow?.used_count ?? 0;
+  const freeUsed = usedCount >= FREE_SIMS_LIMIT;
 
   const { data: purchase } = await supabase
     .from("anon_purchases")
@@ -76,7 +80,7 @@ export async function checkAccess(
 
   return {
     canSimulate: true,
-    hasFreeSim: !freeUsed,
+    hasFreeSim: usedCount < FREE_SIMS_LIMIT,
     simulationsRemaining: hasPaid ? simulationsRemaining : null,
     hasPaid,
   };

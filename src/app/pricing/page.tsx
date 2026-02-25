@@ -62,13 +62,13 @@ function PricingContent() {
           Unlock practice
         </h1>
         <p className="font-lp-mono mt-2 text-[14px] text-[#8b949e]">
-          One free call · then unlock 50 simulations
+          3 free calls · then unlock 50 simulations
         </p>
 
         {gate && (
           <div className="mt-6 w-full rounded-xl border border-[#00e676]/30 bg-[#00e676]/5 p-4 text-center">
             <p className="font-lp-mono text-[14px] text-[#00e676]">
-              You&apos;ve used your free call. Unlock 50 more below.
+              You&apos;ve used your 3 free calls. Unlock 50 more below.
             </p>
           </div>
         )}

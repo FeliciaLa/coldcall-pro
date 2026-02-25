@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAnonymousIdFromRequest } from "@/lib/access";
+import { getAnonymousIdFromRequest, FREE_SIMS_LIMIT } from "@/lib/access";
 import { getSupabase, hasSupabase } from "@/lib/supabase";
 
 export async function POST(request: NextRequest) {
@@ -17,12 +17,19 @@ export async function POST(request: NextRequest) {
     }
 
     const supabase = getSupabase();
+    const { data: row } = await supabase
+      .from("free_sims")
+      .select("used_count")
+      .eq("anonymous_id", anonymousId)
+      .single();
+
+    const nextCount = Math.min((row?.used_count ?? 0) + 1, FREE_SIMS_LIMIT);
     await supabase.from("free_sims").upsert(
-      { anonymous_id: anonymousId, used: true },
+      { anonymous_id: anonymousId, used_count: nextCount },
       { onConflict: "anonymous_id" }
     );
 
-    return NextResponse.json({ ok: true, used: true });
+    return NextResponse.json({ ok: true, used: nextCount >= FREE_SIMS_LIMIT });
   } catch (err) {
     console.error("use-free-sim error:", err);
     return NextResponse.json(
