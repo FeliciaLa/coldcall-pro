@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ColdCall Pro
 
-## Getting Started
+AI-powered voice cold call simulator for aspiring SDRs. Practice with realistic AI prospects, handle objections, and get coaching scorecards after each call.
 
-First, run the development server:
+## Tech stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Next.js 14+** (App Router), **Tailwind CSS**
+- **OpenAI Realtime API** (voice), **OpenAI GPT-4o** (scorecard)
+- **Clerk** (auth), **Stripe Checkout** (£19 one-time), **Supabase** (DB)
+- **Vercel** (hosting)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Copy env and add keys:
+   ```bash
+   cp .env.example .env.local
+   ```
+   Required for core flow: `OPENAI_API_KEY`. Others (Stripe, Clerk, Supabase) for payments and persistence.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install and run:
+   ```bash
+   npm install
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+3. **Database**: Run `supabase-schema.sql` in your Supabase SQL editor when ready to persist users and simulations.
 
-To learn more about Next.js, take a look at the following resources:
+## Routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Route | Description |
+|-------|-------------|
+| `/` | Landing + CTA |
+| `/scenarios` | Scenario grid (5 prospects) |
+| `/sim/[scenarioId]` | Briefing → Call → Scorecard |
+| `/pricing` | Unlock 50 sims for £19 |
+| `/dashboard` | (Post-purchase) History & stats |
+| `/api/voice-session` | Creates OpenAI Realtime ephemeral token |
+| `/api/generate-scorecard` | Transcript → scorecard JSON |
+| `/api/check-access` | Free sim / paid access check |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Voice call (Realtime API)
 
-## Deploy on Vercel
+- **Backend**: `POST /api/voice-session` creates an ephemeral token with the scenario’s system prompt and returns it to the client.
+- **Frontend**: The call UI fetches the token and should establish a **WebRTC** connection to the OpenAI Realtime API for bidirectional voice. The current sim page shows a placeholder call experience; to ship full voice you’ll need to wire the browser client to the Realtime WebRTC endpoint using the token (see [OpenAI Realtime WebRTC](https://developers.openai.com/api/docs/guides/realtime-webrtc)).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Build spec
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The app follows the **ColdCall Pro Build Specification** (see project docs). Implemented so far:
+
+- Next.js + Tailwind, dark theme, scenario config (all 5 personas)
+- Landing, scenarios, pricing pages
+- Pre-call briefing and scorecard UI
+- Voice-session API (ephemeral token), generate-scorecard API (GPT-4o)
+- Check-access API (stub)
+- Supabase schema (SQL file)
+
+Still to do: full WebRTC voice flow, free-sim cookie + DB, Stripe + Clerk, dashboard.
+
+## Node version
+
+The spec targets Next.js 14+. The project was scaffolded with a newer Next.js; if you see engine warnings, use **Node 20+** for best compatibility.
